@@ -73,7 +73,7 @@ public class Thaumcraft extends CompatFeature {
             AspectList tmp = null;
             //TODO temp disable this until I actually decide to fix it
 
-            Method method = ObfuscationReflectionHelper.findMethod(ThaumcraftCraftingManager.class, "getAspectsFromIngredients", AspectList.class, ItemStack.class, IRecipe.class, ArrayList.class);
+            Method method = ObfuscationReflectionHelper.findMethod(ThaumcraftCraftingManager.class, "getAspectsFromIngredients", AspectList.class, NonNullList.class, ItemStack.class, IRecipe.class, ArrayList.class);
             method.setAccessible(true);
 
             try {

@@ -50,7 +50,9 @@ dependencies {
     deobfCompile "team.chisel.ctm:CTM:MC1.12+"
     deobfCompile "com.azanor.baubles:Baubles:1.12-1.5.2"
     deobfCompile "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-4.1.20.690"
-    deobfCompile "CraftTweaker2:CraftTweaker2-MC1120-Mod-JEI:1.12-4.1.20.690"
+    deobfCompile ("CraftTweaker2:CraftTweaker2-MC1120-Mod-JEI:1.12-4.1.20.690") {
+        transitive = false
+    }
 
     if (!project.hasProperty("singleproject")) {
         deobfCompile "betterwithmods.core:BetterWithLib:1.12-1.5"
