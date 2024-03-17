@@ -28,3 +28,5 @@ run*
 /src/main/resources/assets/mcmultiparttest/
 /src/main/java/net/minecraftforge/debug/
 *.py
+.DS_Store
+
