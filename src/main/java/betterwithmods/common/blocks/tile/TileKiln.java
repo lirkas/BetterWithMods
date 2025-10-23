@@ -34,7 +34,7 @@ public class TileKiln extends TileBasic {
     private static final String TAG_CAMO_META = "camoMeta";
 
     public IBlockState camoState;
-
+    public boolean doBlockDrop = true;
 
     public void kiln(World world, BlockPos pos, Random rand) {
         if (getBlockType() instanceof BlockKiln) {
@@ -113,6 +113,9 @@ public class TileKiln extends TileBasic {
 
     @Override
     public void onBreak() {
+        if(!this.doBlockDrop) {
+            return;
+        }
         Block block = camoState.getBlock();
         int meta = block.getMetaFromState(camoState);
         InvUtils.ejectStackWithOffset(world, pos, new ItemStack(block, 1, meta));

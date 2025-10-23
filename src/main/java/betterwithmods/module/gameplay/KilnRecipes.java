@@ -65,8 +65,8 @@ public class KilnRecipes extends Feature {
     @SuppressWarnings("deprecation")
     @SubscribeEvent
     public void onKilnPlace(BlockEvent.PlaceEvent event) {
-        if (event.getPlacedBlock().getBlock() != Blocks.AIR)
-            KilnStructureManager.createKiln(event.getWorld(), event.getPos());
+        // if (event.getPlacedBlock().getBlock() != Blocks.AIR)
+        //     KilnStructureManager.createKiln(event.getWorld(), event.getPos());
     }
 
 
