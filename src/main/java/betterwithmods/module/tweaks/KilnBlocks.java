@@ -1,6 +1,7 @@
 package betterwithmods.module.tweaks;
 
-import java.util.HashSet;
+import java.util.Collection;
+import java.util.LinkedHashSet;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockColored;
@@ -8,6 +9,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.EnumDyeColor;
 
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 import betterwithmods.common.registry.KilnStructureManager;
 import betterwithmods.module.Feature;
@@ -15,11 +17,10 @@ import betterwithmods.module.Feature;
 
 public class KilnBlocks extends Feature {
 
-    public String configCategory;
-    public String configName;
     public boolean enabledByDefault = true;
 
-    public static HashSet<String> kilnBlocksWhitelist;
+    public static boolean forbidBlockRegistration;
+    public static String[] kilnBlocksWhitelist;
     
     @Override
     public String getFeatureDescription() {
@@ -28,11 +29,23 @@ public class KilnBlocks extends Feature {
 
     @Override
     public void setupConfig() {
-        kilnBlocksWhitelist = loadPropStringHashSet(
+        forbidBlockRegistration = loadPropBool(
+            "Forbid Blocks Registration", 
+            "Prevent other mods from registering their own valid kiln blocks.", 
+            true
+        );
+        kilnBlocksWhitelist = loadPropStringList(
             "Whitelist", 
-            "Valid kiln blocks", 
+            "Valid kiln blocks.", 
             new String[]{"minecraft:brick_block"}
         );
+    }
+
+    @Override
+    public void preInit(FMLPreInitializationEvent event) {
+        if(forbidBlockRegistration) {
+            KilnStructureManager.KILN_BLOCKS = new FakeSet<IBlockState>();
+        }
     }
 
     @Override
@@ -55,17 +68,47 @@ public class KilnBlocks extends Feature {
                 for(EnumDyeColor enumdyecolor : EnumDyeColor.values()) {
                     IBlockState coloredBlockState = block.getDefaultState().withProperty(BlockColored.COLOR, enumdyecolor);
                     if(coloredBlockState != null) {
-                        KilnStructureManager.registerKilnBlock(coloredBlockState);
+                        registerKilnBlock(coloredBlockState);
                     }
                 }
             }
             else {
-                KilnStructureManager.registerKilnBlock(block.getDefaultState());
+                registerKilnBlock(block.getDefaultState());
             }
+        }
+    }
+
+    public static void registerKilnBlock(IBlockState kilnBlockState) {
+        if(forbidBlockRegistration) {
+            ((FakeSet<IBlockState>) KilnStructureManager.KILN_BLOCKS).addForReal(kilnBlockState);
+        }
+        else {
+            KilnStructureManager.KILN_BLOCKS.add(kilnBlockState);
         }
     }
 
     public static void unregisterKilnBlocks() {
         KilnStructureManager.KILN_BLOCKS.clear();
+    }
+
+    public static class FakeSet<T> extends LinkedHashSet<T> {
+
+        @Override
+        public boolean add(T element) {
+            return false;
+        }
+
+        @Override
+        public boolean addAll(Collection<? extends T> elements) {
+            return false;
+        }
+
+        public boolean addForReal(T element) {
+            return super.add(element);
+        }
+
+        public boolean addAllForReal(Collection<? extends T> elements) {
+            return super.addAll(elements);
+        }
     }
 }
