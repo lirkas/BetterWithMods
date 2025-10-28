@@ -32,7 +32,7 @@ public class KilnBlocks extends Feature {
         forbidBlockRegistration = loadPropBool(
             "Forbid Blocks Registration", 
             "Prevent other mods from registering their own valid kiln blocks.", 
-            true
+            false
         );
         kilnBlocksWhitelist = loadPropStringList(
             "Whitelist", 
